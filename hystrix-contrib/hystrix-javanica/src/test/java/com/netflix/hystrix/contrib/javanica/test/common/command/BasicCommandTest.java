@@ -98,7 +98,7 @@ public abstract class BasicCommandTest extends BasicHystrixTest {
         HystrixInvokableInfo<?> command = HystrixRequestLog.getCurrentRequest()
                 .getAllExecutedCommands().iterator().next();
 
-        assertEquals("getByKeyForceFail", command.getCommandKey().name());
+        assertEquals("GenericUserService.getByKeyForceFail", command.getCommandKey().name());
         // confirm that command has failed
         assertTrue(command.getExecutionEvents().contains(HystrixEventType.FAILURE));
         // and that fallback was successful

@@ -167,7 +167,7 @@ public final class MetaHolder {
     }
 
     public String getCommandKey() {
-        return isCommandAnnotationPresent() ? get(hystrixCommand.commandKey(), defaultCommandKey) : "";
+        return isCommandAnnotationPresent() ? getClassNameIfInterface() + get(hystrixCommand.commandKey(), defaultCommandKey) : "";
     }
 
     public String getThreadPoolKey() {
@@ -347,6 +347,10 @@ public final class MetaHolder {
             res = defaultChoice.get();
         }
         return map.apply(res);
+    }
+
+    private String getClassNameIfInterface() {
+        return obj.getClass().getInterfaces().length > 0 ? obj.getClass().getSimpleName() + "." : "";
     }
 
     public static final class Builder {
