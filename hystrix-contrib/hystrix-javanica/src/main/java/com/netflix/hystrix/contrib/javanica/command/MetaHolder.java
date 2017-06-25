@@ -39,6 +39,8 @@ import java.util.List;
 @Immutable
 public final class MetaHolder {
 
+    private static final java.lang.CharSequence PREFIX_DELIMITER = ".";
+
     private final HystrixCollapser hystrixCollapser;
     private final HystrixCommand hystrixCommand;
     private final DefaultProperties defaultProperties;
@@ -167,7 +169,7 @@ public final class MetaHolder {
     }
 
     public String getCommandKey() {
-        return isCommandAnnotationPresent() ? getClassNameIfInterface() + get(hystrixCommand.commandKey(), defaultCommandKey) : "";
+        return isCommandAnnotationPresent() ? prefixCommandKey(get(hystrixCommand.commandKey(), defaultCommandKey)) : "";
     }
 
     public String getThreadPoolKey() {
@@ -349,8 +351,16 @@ public final class MetaHolder {
         return map.apply(res);
     }
 
-    private String getClassNameIfInterface() {
-        return obj.getClass().getInterfaces().length > 0 ? obj.getClass().getSimpleName() + "." : "";
+    private String prefixCommandKey(String commandKey) {
+        return classImplementsInterface() ? String.join(PREFIX_DELIMITER, getSimpleClassName(), commandKey): commandKey ;
+    }
+
+    private String getSimpleClassName() {
+        return obj.getClass().getSimpleName();
+    }
+
+    private boolean classImplementsInterface() {
+        return obj.getClass().getInterfaces().length > 0;
     }
 
     public static final class Builder {
